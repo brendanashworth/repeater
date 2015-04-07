@@ -3,15 +3,19 @@
 #include <string.h> // strcmp()
 #include <unistd.h> // usleep()
 
+void print_help() {
+    printf("usage: repeater {command} flags...[-d delay]\n");
+    printf("flags:\n");
+    printf("  -d, --delay n  Set delay between runs (ms), default 10\n");
+    printf("  -m, --max n    Set maximum number of runs, default 1000\n");
+    printf("  -c, --code n   Set needed code to continue, default 0\n");
+}
+
 int main(int argc, char* argv[]) {
     // Parse arguments
     // First arg must be command to run; the rest are flags
     if (argc < 2) {
-        printf("usage: repeater {command} flags...[-d delay]\n");
-        printf("flags:\n");
-        printf("  -d, --delay n  Set delay between runs (ms), default 10\n");
-        printf("  -m, --max n    Set maximum number of runs, default 1000\n");
-        printf("  -c, --code n   Set needed code to continue, default 0\n");
+        print_help();
 
         return 1;
     }
