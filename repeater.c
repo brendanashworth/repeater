@@ -2,6 +2,7 @@
 #include <stdio.h> // printf()
 #include <string.h> // strcmp()
 #include <assert.h> // assert()
+#include <unistd.h> // usleep()
 
 int main(int argc, char* argv[]) {
     // Parse arguments
@@ -25,6 +26,13 @@ int main(int argc, char* argv[]) {
             delay = strtol(argv[i + 1], NULL, 10);
         else if (!strcmp(argv[i], "-m") || !strcmp(argv[i], "--max"))
             maximum = strtol(argv[i + 1], NULL, 10);
+    }
+
+    // Go!
+    for (int j = 0; j < maximum; j++) {
+        int retcode = system(command);
+
+        usleep(delay * 1000);
     }
 
     printf("args: %d, delay: %d, max: %d, cmd: %s\n", argc, delay, maximum, command);
