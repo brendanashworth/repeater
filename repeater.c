@@ -1,7 +1,6 @@
 #include <stdlib.h> // system(), strtol()
 #include <stdio.h> // printf()
 #include <string.h> // strcmp()
-#include <assert.h> // assert()
 #include <unistd.h> // usleep()
 
 int main(int argc, char* argv[]) {
@@ -12,6 +11,7 @@ int main(int argc, char* argv[]) {
         printf("flags:\n");
         printf("  -d, --delay n  Set delay between runs (ms), default 10\n");
         printf("  -m, --max n    Set maximum number of runs, default 1000\n");
+        printf("  -c, --code n   Set needed code to continue, default 0\n");
 
         return 1;
     }
@@ -19,6 +19,7 @@ int main(int argc, char* argv[]) {
     char* command = argv[1];
     int delay = 10;
     int maximum = 1000;
+    int retcode = 0;
 
     // Go through, parsing for flags
     for (int i = 2; i < argc; i++) {
@@ -26,16 +27,20 @@ int main(int argc, char* argv[]) {
             delay = strtol(argv[i + 1], NULL, 10);
         else if (!strcmp(argv[i], "-m") || !strcmp(argv[i], "--max"))
             maximum = strtol(argv[i + 1], NULL, 10);
+        else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--code"))
+            retcode = strtol(argv[i + 1], NULL, 10);
     }
 
     // Go!
     for (int j = 0; j < maximum; j++) {
-        int retcode = system(command);
+        int code = system(command);
+        if (code != retcode) {
+            printf("! failed to get code %d, instead got %d\n", retcode, code);
+            return 2;
+        }
 
         usleep(delay * 1000);
     }
-
-    printf("args: %d, delay: %d, max: %d, cmd: %s\n", argc, delay, maximum, command);
 
     return 0;
 }
