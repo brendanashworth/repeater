@@ -13,7 +13,7 @@ Flags:
   -m, --max n    Set maximum number of runs, default 1000
   -c, --code n   Set needed code to continue, default 0
 
-``
+```
 
 ## License
 [MIT](./LICENSE)
