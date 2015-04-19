@@ -1,24 +1,26 @@
-#include <stdlib.h> // system(), strtol()
+#include <stdlib.h> // system(), strtol(), exit()
 #include <stdio.h> // printf()
 #include <string.h> // strcmp()
 #include <unistd.h> // usleep()
 
 void print_help() {
-    printf("usage: repeater {command} flags...[-d delay]\n");
-    printf("flags:\n");
+    printf("\n");
+    printf("Usage: repeater {command} [-h] [-d delay] [-m max] [-c code]\n");
+    printf("Flags:\n");
+    printf("  -h, --help     View this help\n");
     printf("  -d, --delay n  Set delay between runs (ms), default 10\n");
     printf("  -m, --max n    Set maximum number of runs, default 1000\n");
     printf("  -c, --code n   Set needed code to continue, default 0\n");
+    printf("\n");
+
+    exit(1);
 }
 
 int main(int argc, char* argv[]) {
     // Parse arguments
     // First arg must be command to run; the rest are flags
-    if (argc < 2) {
+    if (argc < 2)
         print_help();
-
-        return 1;
-    }
 
     char* command = argv[1];
     int delay = 10;
@@ -33,6 +35,8 @@ int main(int argc, char* argv[]) {
             maximum = strtol(argv[i + 1], NULL, 10);
         else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--code"))
             retcode = strtol(argv[i + 1], NULL, 10);
+        else if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help"))
+            print_help();
     }
 
     // Go!
@@ -40,11 +44,11 @@ int main(int argc, char* argv[]) {
         int code = system(command);
         if (code != retcode) {
             printf("! failed to get code %d, instead got %d\n", retcode, code);
-            return 2;
+            exit(2);
         }
 
         usleep(delay * 1000);
     }
 
-    return 0;
+    exit(0);
 }
