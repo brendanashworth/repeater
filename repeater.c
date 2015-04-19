@@ -42,6 +42,13 @@ int main(int argc, char* argv[]) {
     // Go!
     for (int j = 0; j < maximum; j++) {
         int code = system(command);
+
+// On some systems, system(3) and wait(2) will give an odd return value that
+// is x256 and some bytes different than the real return value. Fix this.
+#ifdef WEXITSTATUS
+        code = WEXITSTATUS(code);
+#endif
+
         if (code != retcode) {
             printf("! failed to get code %d, instead got %d\n", retcode, code);
             exit(2);
